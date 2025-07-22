@@ -1,0 +1,687 @@
+{
+  "name": "Radio Kampus Today",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "=curl 'https://api.radiokampus.fm/playlista/?day={{$today.format('yyyyMMdd') }}' \\\n  -H 'Accept: application/json, text/plain, */*' \\\n  -H 'Accept-Language: pl,en;q=0.9,en-GB;q=0.8' \\\n  -H 'Connection: keep-alive' \\\n  -H 'Origin: https://radiokampus.fm' \\\n  -H 'Referer: https://radiokampus.fm/' \\\n  -H 'Sec-Fetch-Dest: empty' \\\n  -H 'Sec-Fetch-Mode: cors' \\\n  -H 'Sec-Fetch-Site: same-site' \\\n  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0' \\\n  -H 'sec-ch-ua: \"Chromium\";v=\"134\", \"Not:A-Brand\";v=\"24\", \"Microsoft Edge\";v=\"134\"' \\\n  -H 'sec-ch-ua-mobile: ?0' \\\n  -H 'sec-ch-ua-platform: \"macOS\"' "
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        1180
+      ],
+      "id": "46ac596e-fe58-485d-b824-ae3b4babbc6a",
+      "name": "Execute Command",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsedStdout = JSON.parse($input.first().json.stdout);\n\nreturn {\n  json: {\n    result: parsedStdout\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        1180
+      ],
+      "id": "628a98d4-fb28-46c3-9464-2cacba92d881",
+      "name": "convert_stdout_to_json"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "10c5ce4d-7ec5-42ae-bc7d-d694afb2efac",
+              "leftValue": "={{ $now.diffTo($json.start_time, 'minutes')}}",
+              "rightValue": "={{ 10 }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        980,
+        280
+      ],
+      "id": "92750aa0-5008-4216-b6d3-ac12a163d770",
+      "name": "Only from last 10 min"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.first().json.result.map(e => {\n  return {\n    json: e\n  }\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        1180
+      ],
+      "id": "0f4b7c72-ab4c-45b0-8b57-44dd915c2376",
+      "name": "remap item"
+    },
+    {
+      "parameters": {
+        "content": "https://community.n8n.io/t/string-to-json-and-remap-item/20312/2"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        1140
+      ],
+      "id": "82fc3cff-cea1-4c03-9449-a11270313dd1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "track.uri",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -220
+      ],
+      "id": "e795787e-e6b5-4d8e-b62a-c7ffb6fd259c",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "7792df90-9056-40ea-b4c4-2bcaec6dc2d5",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "song_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        440,
+        120
+      ],
+      "id": "ca0bd9a3-7a9e-4799-b007-ecf4adfbc3b5",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "content": "curl not found when restarted -"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        1340
+      ],
+      "id": "bf10dd96-4a49-4d9d-9528-51216ed53e1e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c9452990-b5e2-4770-bd62-ec17284ccecb",
+              "leftValue": "={{ $now.diffTo($now.format('00:00'), 'minutes') }}",
+              "rightValue": "={{ 15 }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "556fa63f-23cc-4610-81d4-c83c13302d68",
+      "name": "If midnight"
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "operation": "getTracks",
+        "id": "spotify:playlist:2mRjj1n58ZlEg1HTy1VtHm",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -220
+      ],
+      "id": "973331e5-2e37-47e4-9f75-357458801ec2",
+      "name": "Get Tracks",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "operation": "delete",
+        "id": "spotify:playlist:2mRjj1n58ZlEg1HTy1VtHm",
+        "trackID": "={{ $json['track.uri'] }}"
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        420,
+        -220
+      ],
+      "id": "5fbe7a6d-8457-4bc7-b824-df41cf671114",
+      "name": "Clear Playlist",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "operation": "get",
+        "id": "spotify:playlist:2mRjj1n58ZlEg1HTy1VtHm"
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        0,
+        120
+      ],
+      "id": "a3610f7b-2ced-42ed-98cb-9ea11d97fe31",
+      "name": "Get Playlist Info",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.radiokampus.fm/playlista/?api=true",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n    \"Accept\": \"application/json, text/plain, */*\",\n    \"Accept-Encoding\": \"gzip, deflate, br, zstd\",\n    \"Accept-Language\": \"pl,en;q=0.9,en-GB;q=0.8\",\n    \"Connection\": \"keep-alive\",\n    \"Host\": \"api.radiokampus.fm\",\n    \"Origin\": \"https://radiokampus.fm\",\n    \"Referer\": \"https://radiokampus.fm/\",\n    \"Sec-Fetch-Dest\": \"empty\",\n    \"Sec-Fetch-Mode\": \"cors\",\n    \"Sec-Fetch-Site\": \"same-site\",\n    \"User-Agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0\",\n    \"sec-ch-ua\": \"\\\"Chromium\\\";v=\\\"134\\\", \\\"Not:A-Brand\\\";v=\\\"24\\\", \\\"Microsoft Edge\\\";v=\\\"134\\\"\",\n    \"sec-ch-ua-mobile\": \"?0\",\n    \"sec-ch-ua-platform\": \"\\\"macOS\\\"\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        120
+      ],
+      "id": "baaf7ed8-44e7-44e7-9031-d48c1e35ec7f",
+      "name": "GET Songs List"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c15c63-15c5-46e8-9f29-3457c7031e82",
+              "leftValue": "={{ $('Get Playlist Info').item.json.tracks.total }}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        120
+      ],
+      "id": "66169c24-345b-443e-a8f1-d52354f0ab43",
+      "name": "IF Empty Playlist"
+    },
+    {
+      "parameters": {
+        "resource": "track",
+        "operation": "search",
+        "query": "={{ $json.artist }} {{ $json.title }}",
+        "limit": "=1",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        980,
+        0
+      ],
+      "id": "aa1514dd-3b5b-4cce-9599-550ebf7bc5e4",
+      "name": "Search Track",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fba2956b-cfab-4b1a-8383-a370e1eb3046",
+              "leftValue": "={{ $json.name.toLowerCase() }}",
+              "rightValue": "={{ $('IF Empty Playlist').item.json.title.toLowerCase() }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "faf1c45f-2f5d-47fe-ab28-9fb8f7d6ac78",
+              "leftValue": "={{ $('IF Empty Playlist').item.json.title.toLowerCase() }}",
+              "rightValue": "={{ $json.name.toLowerCase() }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1220,
+        0
+      ],
+      "id": "c26d4035-7003-479f-a638-ad6ea764e950",
+      "name": "Check If Correct Track"
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "id": "spotify:playlist:2mRjj1n58ZlEg1HTy1VtHm",
+        "trackID": "={{ $json.uri }}",
+        "additionalFields": {
+          "position": 0
+        }
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "046b2d48-5a2b-4119-af3c-d9b326c2a641",
+      "name": "Add to Playlist",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "track",
+        "operation": "search",
+        "query": "={{ $json.artist }} {{ $json.title }}",
+        "limit": 1,
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        280
+      ],
+      "id": "b0987fab-9aed-446f-97ac-e930abba0779",
+      "name": "Search Track2",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fba2956b-cfab-4b1a-8383-a370e1eb3046",
+              "leftValue": "={{ $json.name.toLowerCase() }}",
+              "rightValue": "={{ $('Only from last 10 min').item.json.title.toLowerCase() }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "faf1c45f-2f5d-47fe-ab28-9fb8f7d6ac78",
+              "leftValue": "={{ $('Only from last 10 min').item.json.title.toLowerCase() }}",
+              "rightValue": "={{ $json.name.toLowerCase() }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        280
+      ],
+      "id": "72632563-01cf-4633-abbd-e749e6e57d81",
+      "name": "Check If Correct Track1"
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "id": "spotify:playlist:2mRjj1n58ZlEg1HTy1VtHm",
+        "trackID": "={{ $json.uri }}",
+        "additionalFields": {
+          "position": 0
+        }
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        280
+      ],
+      "id": "38634f33-2879-4c34-be2a-1101e2251296",
+      "name": "Add to Playlist1",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "convert_stdout_to_json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "convert_stdout_to_json": {
+      "main": [
+        [
+          {
+            "node": "remap item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Only from last 10 min": {
+      "main": [
+        [
+          {
+            "node": "Search Track2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remap item": {
+      "main": [
+        []
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Clear Playlist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "If midnight",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "IF Empty Playlist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If midnight": {
+      "main": [
+        [
+          {
+            "node": "Get Tracks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Playlist Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Tracks": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Playlist Info": {
+      "main": [
+        [
+          {
+            "node": "GET Songs List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Songs List": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Empty Playlist": {
+      "main": [
+        [
+          {
+            "node": "Search Track",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Only from last 10 min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Track": {
+      "main": [
+        [
+          {
+            "node": "Check If Correct Track",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Correct Track": {
+      "main": [
+        [
+          {
+            "node": "Add to Playlist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Track2": {
+      "main": [
+        [
+          {
+            "node": "Check If Correct Track1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Correct Track1": {
+      "main": [
+        [
+          {
+            "node": "Add to Playlist1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Warsaw",
+    "callerPolicy": "workflowsFromSameOwner",
+    "saveExecutionProgress": true
+  },
+  "versionId": "fd4e98ec-dbe0-4dcb-8aca-e47983e78e8e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bdd689fe744662b4e531131caad9b9ace3aa55dcb0b6be1ddefd2e14f6e8fd09"
+  },
+  "id": "Yd7u0fyd8CGX0lOj",
+  "tags": []
+}
