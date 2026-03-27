@@ -1,0 +1,373 @@
+{
+  "name": "LRM",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://lubelskirower.filfri.eu/maps/export/pl/5/100/600/14",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "ddc1d383-2d95-4346-8b74-edeeb7af8e3a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const htmlString = $input.first().json.data;\n\nconst matchZones = htmlString.match(/var zonesList\\s*=\\s*(\\[[\\s\\S]*?\\]);/);\n\nconst matchVehicle = htmlString.match(/var vehiclesList\\s*=\\s*(\\[[\\s\\S]*?\\]);/);\n\n\nconst zonesListJSON = eval(matchZones[1]);\nconst vehicleListJSON = eval(matchVehicle[1]);\n\nreturn zonesListJSON "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "ccc0cccc-841a-4bdd-8c5e-f9d2bb227806",
+      "name": "zones"
+    },
+    {
+      "parameters": {
+        "jsCode": "const htmlString = $('HTTP Request').first().json.data;\n\nconst matchZones = htmlString.match(/var zonesList\\s*=\\s*(\\[[\\s\\S]*?\\]);/);\n\nconst matchVehicle = htmlString.match(/var vehiclesList\\s*=\\s*(\\[[\\s\\S]*?\\]);/);\n\n\nconst zonesListJSON = eval(matchZones[1]);\nconst vehicleListJSON = eval(matchVehicle[1]);\n\nreturn vehicleListJSON "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        200
+      ],
+      "id": "2e6905bf-217c-4825-956e-239242c06ae3",
+      "name": "vehicles"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "sum",
+              "field": "bikes"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        980,
+        0
+      ],
+      "id": "b05dfbbf-d3cf-4ef7-b72a-352c57ffee1c",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "vehiclesId"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        200
+      ],
+      "id": "f1beac05-2fe1-44c2-a78a-0d3a652f4cd7",
+      "name": "Summarize1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "rowerylublin",
+          "mode": "list",
+          "cachedResultName": "rowerylublin"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{DateTime.now().toISO()}}",
+            "rowerCount": "={{ $json.count_vehiclesId }}",
+            "rowerNaStacjiCount": "={{ $('Summarize').item.json.sum_bikes }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "rowerCount",
+              "displayName": "rowerCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rowerNaStacjiCount",
+              "displayName": "rowerNaStacjiCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1400,
+        0
+      ],
+      "id": "f71ec8bc-a775-4d42-8c41-c3b398c5b5f0",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "s17AKesnTgN7q2vH",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "578f0246-a42c-4b96-8a46-241f05aad6ba",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "rowerydokladnelublin",
+          "mode": "list",
+          "cachedResultName": "rowerydokladnelublin"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{DateTime.now().toISO()}}",
+            "Latitude": "={{ $('vehicles').item.json.latitude }}",
+            "Longitude": "={{ $('vehicles').item.json.longitude }}",
+            "RowerID": "={{ $('vehicles').item.json.vehiclesId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Longitude",
+              "displayName": "Longitude",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Latitude",
+              "displayName": "Latitude",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "RowerID",
+              "displayName": "RowerID",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        880,
+        360
+      ],
+      "id": "207a1a12-5bda-42b5-abd4-6a3d81f927a0",
+      "name": "Postgres1",
+      "credentials": {
+        "postgres": {
+          "id": "s17AKesnTgN7q2vH",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "zones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "zones": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vehicles": {
+      "main": [
+        [
+          {
+            "node": "Summarize1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "vehicles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize1": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        []
+      ]
+    },
+    "Postgres1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Warsaw",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "73ab654d-065a-4d62-8045-3972222990ed",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bdd689fe744662b4e531131caad9b9ace3aa55dcb0b6be1ddefd2e14f6e8fd09"
+  },
+  "id": "Il4NXMPWTOsYBKtj",
+  "tags": []
+}
