@@ -55,7 +55,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        980,
+        1420,
         280
       ],
       "id": "92750aa0-5008-4216-b6d3-ac12a163d770",
@@ -95,8 +95,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        220,
-        -220
+        400,
+        -380
       ],
       "id": "e795787e-e6b5-4d8e-b62a-c7ffb6fd259c",
       "name": "Split Out"
@@ -135,7 +135,7 @@
       "type": "n8n-nodes-base.sort",
       "typeVersion": 1,
       "position": [
-        440,
+        900,
         120
       ],
       "id": "ca0bd9a3-7a9e-4799-b007-ecf4adfbc3b5",
@@ -197,8 +197,8 @@
       "type": "n8n-nodes-base.spotify",
       "typeVersion": 1,
       "position": [
-        0,
-        -220
+        180,
+        -380
       ],
       "id": "973331e5-2e37-47e4-9f75-357458801ec2",
       "name": "Get Tracks",
@@ -219,8 +219,8 @@
       "type": "n8n-nodes-base.spotify",
       "typeVersion": 1,
       "position": [
-        420,
-        -220
+        580,
+        -380
       ],
       "id": "5fbe7a6d-8457-4bc7-b824-df41cf671114",
       "name": "Clear Playlist",
@@ -241,7 +241,7 @@
       "typeVersion": 1,
       "position": [
         0,
-        120
+        400
       ],
       "id": "a3610f7b-2ced-42ed-98cb-9ea11d97fe31",
       "name": "Get Playlist Info",
@@ -281,7 +281,7 @@
           "conditions": [
             {
               "id": "74c15c63-15c5-46e8-9f29-3457c7031e82",
-              "leftValue": "={{ $('Get Playlist Info').item.json.tracks.total }}",
+              "leftValue": "={{ $('Get Playlist Info1').item.json.total }}",
               "rightValue": "={{ 0 }}",
               "operator": {
                 "type": "number",
@@ -296,7 +296,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        680,
+        1120,
         120
       ],
       "id": "66169c24-345b-443e-a8f1-d52354f0ab43",
@@ -313,7 +313,7 @@
       "type": "n8n-nodes-base.spotify",
       "typeVersion": 1,
       "position": [
-        980,
+        1420,
         0
       ],
       "id": "aa1514dd-3b5b-4cce-9599-550ebf7bc5e4",
@@ -363,7 +363,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        1220,
+        1660,
         0
       ],
       "id": "c26d4035-7003-479f-a638-ad6ea764e950",
@@ -381,8 +381,8 @@
       "type": "n8n-nodes-base.spotify",
       "typeVersion": 1,
       "position": [
-        1440,
-        0
+        1600,
+        -160
       ],
       "id": "046b2d48-5a2b-4119-af3c-d9b326c2a641",
       "name": "Add to Playlist",
@@ -404,7 +404,7 @@
       "type": "n8n-nodes-base.spotify",
       "typeVersion": 1,
       "position": [
-        1220,
+        1660,
         280
       ],
       "id": "b0987fab-9aed-446f-97ac-e930abba0779",
@@ -452,7 +452,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        1440,
+        1880,
         280
       ],
       "id": "72632563-01cf-4633-abbd-e749e6e57d81",
@@ -470,8 +470,8 @@
       "type": "n8n-nodes-base.spotify",
       "typeVersion": 1,
       "position": [
-        1680,
-        280
+        1960,
+        500
       ],
       "id": "38634f33-2879-4c34-be2a-1101e2251296",
       "name": "Add to Playlist1",
@@ -481,6 +481,493 @@
           "name": "Spotify account"
         }
       }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "kampus",
+          "mode": "list",
+          "cachedResultName": "kampus"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "TrackID": "={{ $('Search Track2').item.json.uri }}",
+            "Title": "={{ $('Search Track2').item.json.name }}",
+            "Artist": "={{ $('Search Track2').item.json.artists[0].name }}",
+            "DateAdded": "={{DateTime.now().toISO()}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TrackID",
+              "displayName": "TrackID",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist",
+              "displayName": "Artist",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "DateAdded",
+              "displayName": "DateAdded",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2560,
+        280
+      ],
+      "id": "4d895885-8975-4f87-984e-c403d99a565b",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "s17AKesnTgN7q2vH",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "kampus",
+          "mode": "list",
+          "cachedResultName": "kampus"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "TrackID": "={{ $('Search Track').item.json.uri }}",
+            "Title": "={{ $('Search Track').item.json.name }}",
+            "Artist": "={{ $('Search Track').item.json.artists[0].name }}",
+            "DateAdded": "={{DateTime.now().toISO()}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TrackID",
+              "displayName": "TrackID",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist",
+              "displayName": "Artist",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "DateAdded",
+              "displayName": "DateAdded",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2460,
+        0
+      ],
+      "id": "1af2bec7-d78e-46d9-8d42-6eaf4b95e4cd",
+      "name": "Postgres1",
+      "credentials": {
+        "postgres": {
+          "id": "s17AKesnTgN7q2vH",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.spotify.com/v1/playlists/2mRjj1n58ZlEg1HTy1VtHm/items",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "spotifyOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"uris\": [\n        \"{{ $json.uri }}\"\n    ],\n    \"position\": 0\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        280
+      ],
+      "id": "ab7efb7b-85ff-45c2-a7fc-a965c8e57434",
+      "name": "HTTP Request",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.spotify.com/v1/playlists/2mRjj1n58ZlEg1HTy1VtHm/items",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "spotifyOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"uris\": [\n        \"{{ $json.uri }}\"\n    ],\n    \"position\": 0\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2040,
+        0
+      ],
+      "id": "b1a0c3c0-0622-424b-8a83-d2327efd1030",
+      "name": "HTTP Request1",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# old api\n",
+        "height": 240,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        -240
+      ],
+      "id": "8fefdf0e-8ff4-47d2-9c88-8c619cf33a00",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.spotify.com/v1/playlists/2mRjj1n58ZlEg1HTy1VtHm/items",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "spotifyOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {
+          "pagination": {
+            "pagination": {
+              "paginationMode": "responseContainsNextURL",
+              "nextURL": "={{ $response.body.next }}",
+              "paginationCompleteWhen": "other",
+              "completeExpression": "={{ $response.body.next == null }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        -180
+      ],
+      "id": "0cb823b5-0f1b-4ede-94ac-c75280da621c",
+      "name": "Get items from playlist",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -180
+      ],
+      "id": "8f87bb4e-4f98-4574-b79c-c6f500c54172",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "item.uri",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        420,
+        -180
+      ],
+      "id": "bc89c602-15a9-445e-b2a5-c736d9d3450c",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://api.spotify.com/v1/playlists/2mRjj1n58ZlEg1HTy1VtHm/items",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "spotifyOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ items: $json.items }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        -180
+      ],
+      "id": "98b0e68f-430f-4317-952e-8fc264d14f5b",
+      "name": "Remove items from playlist1",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const allUris = $input.all().map(item => item.json['item.uri']);\n\nconst chunks = [];\nfor (let i = 0; i < allUris.length; i += 100) {\n  const slice = allUris.slice(i, i + 100);\n  chunks.push({\n    json: {\n      items: slice.map(uri => ({ uri }))\n    }\n  });\n}\n\nreturn chunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -180
+      ],
+      "id": "aded4df0-b10e-4b29-b7cf-37ca0ba7e65d",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "content": "# old api",
+        "height": 240,
+        "width": 1020
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -460
+      ],
+      "id": "d5b94828-b760-42d5-90a8-b26f4732ada5",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# old api\n",
+        "height": 240,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        420
+      ],
+      "id": "936e6597-e98c-41c5-a64e-abf822a42a87",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.spotify.com/v1/playlists/2mRjj1n58ZlEg1HTy1VtHm/items",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "spotifyOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {
+          "pagination": {
+            "pagination": {
+              "paginationMode": "responseContainsNextURL",
+              "nextURL": "={{ $response.body.next }}",
+              "paginationCompleteWhen": "other",
+              "completeExpression": "={{ $response.body.next == null }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        120
+      ],
+      "id": "4ce4da63-46c4-48d3-8045-cece68c4a99d",
+      "name": "Get Playlist Info1",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        700,
+        120
+      ],
+      "id": "d283f16c-baab-493c-9bae-34557558c2f1",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "be1dc4e1-77da-426d-8eef-c960f26dbf5b",
+              "leftValue": "={{ $json.song_id}}",
+              "rightValue": 9999,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        120
+      ],
+      "id": "6a971a38-c5ee-4975-8f6d-a1ec62bf6e4a",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "content": "# old api\n",
+        "height": 240,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        320
+      ],
+      "id": "4743c353-162f-4431-9fcd-618ce6cf22a5",
+      "name": "Sticky Note7"
     }
   ],
   "pinData": {},
@@ -560,14 +1047,14 @@
       "main": [
         [
           {
-            "node": "Get Tracks",
+            "node": "Get items from playlist",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Get Playlist Info",
+            "node": "Get Playlist Info1",
             "type": "main",
             "index": 0
           }
@@ -587,20 +1074,14 @@
     },
     "Get Playlist Info": {
       "main": [
-        [
-          {
-            "node": "GET Songs List",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "GET Songs List": {
       "main": [
         [
           {
-            "node": "Sort",
+            "node": "Filter",
             "type": "main",
             "index": 0
           }
@@ -640,7 +1121,7 @@
       "main": [
         [
           {
-            "node": "Add to Playlist",
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -662,7 +1143,121 @@
       "main": [
         [
           {
-            "node": "Add to Playlist1",
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Playlist1": {
+      "main": [
+        []
+      ]
+    },
+    "Add to Playlist": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get items from playlist": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove items from playlist1": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Remove items from playlist1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Playlist Info1": {
+      "main": [
+        [
+          {
+            "node": "GET Songs List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
             "type": "main",
             "index": 0
           }
@@ -677,7 +1272,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "saveExecutionProgress": true
   },
-  "versionId": "fd4e98ec-dbe0-4dcb-8aca-e47983e78e8e",
+  "versionId": "460d320d-76a7-487c-9cba-067f078ad3fd",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "bdd689fe744662b4e531131caad9b9ace3aa55dcb0b6be1ddefd2e14f6e8fd09"

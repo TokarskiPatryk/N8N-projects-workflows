@@ -1,0 +1,296 @@
+{
+  "name": "Wczoraj w Radio Kampus",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "- at midnight\n- Read data from yesterday postgres database\n- if there is more than 50 rows returned (make sure that the data was added yesterday)\n- clear playlist\n- add all new songs to playlist (bulk?) - use uri link from database, searching is not needed (add first the oldest ones\n",
+        "height": 340,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -340
+      ],
+      "id": "e390e383-9b64-492e-9d17-ff2475d08a31",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtMinute": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f8602361-f89a-4d62-90fe-69d01440974d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \"TrackID\" FROM public.kampus\nWHERE \"DateAdded\"::date = '{{ $json.timestamp.toDateTime().minus(1,'day').format('yyyy-MM-dd') }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        420,
+        -20
+      ],
+      "id": "3e0857de-7b75-4cd3-acff-23fc2154b26f",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "s17AKesnTgN7q2vH",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "TrackID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        -20
+      ],
+      "id": "c72d9bc1-9310-47fb-9ae2-8f86e0f07510",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "operation": "delete",
+        "id": "spotify:playlist:0alIc7wyy0ZHueiQ58bwO3",
+        "trackID": "={{ $json.item.uri }}"
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        -120
+      ],
+      "id": "4cd17f89-203f-420a-b756-4c3a66ecebc3",
+      "name": "Spotify",
+      "alwaysOutputData": false,
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "operation": "getTracks",
+        "id": "spotify:playlist:0alIc7wyy0ZHueiQ58bwO3"
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        -120
+      ],
+      "id": "b0e77906-da40-4070-8801-6e91df38d814",
+      "name": "Spotify1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e70e70a6-329d-450d-87d0-9e28334f14a6",
+              "leftValue": "={{ $json.count_TrackID }}",
+              "rightValue": 50,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        860,
+        -20
+      ],
+      "id": "f8494bac-c780-48a3-aaa5-d7fd222e4bfb",
+      "name": "If more than 50 songs, execute workflow"
+    },
+    {
+      "parameters": {
+        "resource": "playlist",
+        "id": "spotify:playlist:0alIc7wyy0ZHueiQ58bwO3",
+        "trackID": "={{ $json.TrackID }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        -120
+      ],
+      "id": "8cb9c5ec-38ee-4bbd-93e5-611b51d13dac",
+      "name": "Spotify2",
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "dasVh44R9RIZzlRF",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \"TrackID\" FROM public.kampus\nWHERE \"DateAdded\"::date = '{{ $('Schedule Trigger').item.json.timestamp.toDateTime().minus(1,'day').format('yyyy-MM-dd') }}'\nORDER BY \"DateAdded\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1660,
+        -120
+      ],
+      "id": "fd5d8eef-f441-4041-9173-d3af54ec08dc",
+      "name": "Postgres1",
+      "credentials": {
+        "postgres": {
+          "id": "s17AKesnTgN7q2vH",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "If more than 50 songs, execute workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spotify1": {
+      "main": [
+        [
+          {
+            "node": "Spotify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spotify": {
+      "main": [
+        [
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If more than 50 songs, execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Spotify1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres1": {
+      "main": [
+        [
+          {
+            "node": "Spotify2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Warsaw",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "d2bf68da-bc40-4c5e-8932-891022e049a0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bdd689fe744662b4e531131caad9b9ace3aa55dcb0b6be1ddefd2e14f6e8fd09"
+  },
+  "id": "hALl4yfHtcQMxBkR",
+  "tags": []
+}
