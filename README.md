@@ -12,12 +12,6 @@ Other available workflows:
 - Q-Music channel (Dutch) (thanks to [g4ntel](https://github.com/g4ntel))
 - Studio Brussel (Belgian) (thanks to [g4ntel](https://github.com/g4ntel))
 For Radio Kampus there are two complementary workflows:
-- `Radio_Kampus_Today.json` — dodaje bieżące utwory na żywo przez cały dzień.
-- `Radio_Kampus_Yesterday.json` — uruchamiany/aktualizowany o północy; zawiera zbiór wszystkich piosenek z dnia poprzedniego.
-
-Pozostałe dostępne workflowy:
-- Q-Music channel (Dutch) (thanks to [g4ntel](https://github.com/g4ntel))
-- Studio Brussel (Belgian) (thanks to [g4ntel](https://github.com/g4ntel))
 
 ## Lubelski Rower Miejski
 The `Lubelski Rower Miejski.json` workflow is used to scrape data about the city bike system in Lublin and upload it to a target website or service. The workflow collects relevant information (e.g., station status and bike availability) and prepares the dataset for publication.
